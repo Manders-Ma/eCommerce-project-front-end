@@ -44,6 +44,13 @@ export class ProductService {
       map(response => response._embedded.products)
     );
   }
+
+  getProductListPaginate(thePageNumber: number, thePageSize: number, theCategoryId: number) {
+    // @Todo: need to build URL based on category id ... will come back to this!
+    const searchUrl: string = `${this.baseUrl}/search/findByCategoryId?id=${theCategoryId}` 
+    + `&page=${thePageNumber}&size=${thePageSize}`;
+    return this.httpClient.get<GetResponseProducts>(searchUrl);
+  }
 }
 
 interface GetResponseProducts {
