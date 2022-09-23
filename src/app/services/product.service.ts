@@ -51,6 +51,13 @@ export class ProductService {
     + `&page=${thePageNumber}&size=${thePageSize}`;
     return this.httpClient.get<GetResponseProducts>(searchUrl);
   }
+
+  searchProductListPaginate(thePageNumber: number, thePageSize: number, theKeyword: string) {
+    // @Todo: need to build URL based on category id ... will come back to this!
+    const searchUrl: string = `${this.baseUrl}/search/findByNameContaining?name=${theKeyword}` 
+    + `&page=${thePageNumber}&size=${thePageSize}`;
+    return this.httpClient.get<GetResponseProducts>(searchUrl);
+  }
 }
 
 interface GetResponseProducts {
