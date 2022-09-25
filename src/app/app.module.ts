@@ -17,6 +17,7 @@ import { ProductService } from './services/product.service';
 
 // import module for using ng-bootstrap
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { CartStatusComponent } from './components/cart-status/cart-status.component';
 
 
 // set up routes constant where you define your routes.
@@ -38,7 +39,8 @@ const routes: Routes = [
     ProductListComponent,
     ProductCatrgoryMenuComponent,
     SearchComponent,
-    ProductDetailsComponent
+    ProductDetailsComponent,
+    CartStatusComponent
   ],
   imports: [
     RouterModule.forRoot(routes),
