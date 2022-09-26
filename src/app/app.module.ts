@@ -18,6 +18,8 @@ import { ProductService } from './services/product.service';
 // import module for using ng-bootstrap
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CartStatusComponent } from './components/cart-status/cart-status.component';
+import { CartDetailsComponent } from './components/cart-details/cart-details.component';
+import { CartService } from './services/cart.service';
 
 
 // set up routes constant where you define your routes.
@@ -25,6 +27,7 @@ const routes: Routes = [
   {path: 'products/:id', component: ProductDetailsComponent},
   {path: 'search/:keyword', component: ProductListComponent},
   {path: "category/:id", component: ProductListComponent},
+  {path: "cart-details", component: CartDetailsComponent},
   {path: "category", component: ProductListComponent},
   {path: "products", component: ProductListComponent},
   // for empty url(relative path /)
@@ -40,7 +43,8 @@ const routes: Routes = [
     ProductCatrgoryMenuComponent,
     SearchComponent,
     ProductDetailsComponent,
-    CartStatusComponent
+    CartStatusComponent,
+    CartDetailsComponent
   ],
   imports: [
     RouterModule.forRoot(routes),
@@ -48,7 +52,7 @@ const routes: Routes = [
     HttpClientModule,
     NgbModule
   ],
-  providers: [ProductService],
+  providers: [ProductService, CartService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
