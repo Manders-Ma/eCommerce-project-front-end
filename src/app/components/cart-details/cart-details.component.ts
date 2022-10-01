@@ -21,8 +21,6 @@ export class CartDetailsComponent implements OnInit {
   listCartItems() {
     this.cartItems = this.cartService.cartItems
 
-    console.log(`My Cart Item have ${this.cartItems[0].name}=====================`);
-
     // subscribe to the cart totalPrice
     this.cartService.totalPrice.subscribe(
       data => this.totalPrice = data
