@@ -19,7 +19,6 @@ export class CheckoutComponent implements OnInit {
 
   creditCardMonth: number[] = [];
   creditCardYear: number[] = [];
-  test: number[] = [1,2,3];
 
   constructor(private formBuilder: FormBuilder, private cartService: CartService, private formService:FormService) { }
 
@@ -86,6 +85,33 @@ export class CheckoutComponent implements OnInit {
 
     // compute cart total price and total quantity
     this.cartService.computeCartTotals();
+  }
+
+  handleMonthsAndYears() {
+    const creditCardFormGroup = this.checkoutFormGroup.get("creditCard");
+
+    const currentYear: number = new Date().getFullYear();
+    const selectedYear: number = Number(creditCardFormGroup?.value.expirationYear);
+
+
+    // if the current year equal selected year, then month = current month ~ 12
+    // otherwise, 1 ~ 12.
+
+    let startMonth:number;
+    if (selectedYear === currentYear) {
+      startMonth = new Date().getMonth() + 1;
+    }
+    else {
+      startMonth = 1
+    }
+
+
+    this.formService.getCreditCardMonths(startMonth).subscribe(
+      data => {
+        console.log("Retrieved credit card months: " + JSON.stringify(data));
+        this.creditCardMonth = data;
+      }
+    )
   }
 
 }

@@ -146,6 +146,7 @@
                 type="text"
                 id="expirationYear"
                 formControlName="expirationYear"
+                (change)="handleMonthsAndYears()"
               >
                 <option *ngFor="let year of creditCardYear">{{ year }}</option>
               </select>
