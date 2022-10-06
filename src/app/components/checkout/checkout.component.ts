@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { Country } from 'src/app/common/country';
+import { State } from 'src/app/common/state';
 import { CartService } from 'src/app/services/cart.service';
 import { FormService } from 'src/app/services/form.service';
 import { CartDetailsComponent } from '../cart-details/cart-details.component';
@@ -19,6 +21,10 @@ export class CheckoutComponent implements OnInit {
 
   creditCardMonth: number[] = [];
   creditCardYear: number[] = [];
+
+  countries: Country[] = [];
+  shoppingAddressStates: State[] = [];
+
 
   constructor(private formBuilder: FormBuilder, private cartService: CartService, private formService:FormService) { }
 
@@ -63,6 +69,14 @@ export class CheckoutComponent implements OnInit {
       data => {
         console.log("Retrieved credit card years: " + JSON.stringify(data));
         this.creditCardYear = data;
+      }
+    )
+
+    // populate countries
+    this.formService.getCountries().subscribe(
+      data => {
+        console.log("Retrieved countries: " + JSON.stringify(data));
+        this.countries = data;
       }
     )
   }
@@ -114,4 +128,20 @@ export class CheckoutComponent implements OnInit {
     )
   }
 
+  getStates() {
+    const formGroup = this.checkoutFormGroup.get("shoppingAddress");
+    const countryName:String = formGroup?.value.country.name;
+    const countryCode:String = formGroup?.value.country.code;
+
+
+    console.log(`country code : ${countryCode}`);
+    console.log(`country code : ${countryName}`);
+    this.formService.getStates(countryCode).subscribe(
+      data => {
+        this.shoppingAddressStates = data;
+        formGroup?.get("state")?.setValue(data[0]);
+      }
+    )
+  }
+  
 }
