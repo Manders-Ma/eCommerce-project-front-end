@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Country } from 'src/app/common/country';
+import { CustomerValidators } from 'src/app/common/customer-validators';
 import { State } from 'src/app/common/state';
 import { CartService } from 'src/app/services/cart.service';
 import { FormService } from 'src/app/services/form.service';
@@ -15,6 +16,7 @@ import { CartDetailsComponent } from '../cart-details/cart-details.component';
 })
 export class CheckoutComponent implements OnInit {
 
+  
   totalPrice: number = 0.00;
   totalQuantity: number = 0;
   checkoutFormGroup!: FormGroup;
@@ -31,9 +33,14 @@ export class CheckoutComponent implements OnInit {
   ngOnInit(): void {
     this.checkoutFormGroup = this.formBuilder.group({
       customer: this.formBuilder.group({
-        firstName: [''],
-        lastName: [''],
-        email: ['']
+        firstName: new FormControl('', [Validators.required, Validators.minLength(2), CustomerValidators.notOnlyWhiteSpace]),
+        lastName: new FormControl('', [Validators.required, Validators.minLength(2), CustomerValidators.notOnlyWhiteSpace]),
+        // [Q] why we are not  using Angular:Validators.email ??
+        // [A] Validators.email only checks for : <some text>@<some text>
+        // ex : angular@gmail will pass by Validators.email
+        // ps : Validators.email and Validators.pattern only checks the FORMAT. 
+        //      Doesn't verify if email address is real. 
+        email: new FormControl('', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+//.[a-z]{2,4}$"), CustomerValidators.notOnlyWhiteSpace])
       }),
       shoppingAddress: this.formBuilder.group({
         street: [''],
@@ -65,6 +72,7 @@ export class CheckoutComponent implements OnInit {
       }
     )
 
+    // populate credit card years
     this.formService.getCreditCardYears().subscribe(
       data => {
         console.log("Retrieved credit card years: " + JSON.stringify(data));
@@ -81,9 +89,22 @@ export class CheckoutComponent implements OnInit {
     )
   }
 
+  get firstName() {
+    return this.checkoutFormGroup.get("customer.firstName")
+  }
+  get lastName() {
+    return this.checkoutFormGroup.get("customer.lastName")
+  }
+  get email() {
+    return this.checkoutFormGroup.get("customer.email")
+  }
+
   onSubmit() {
     console.log("Handling the submit button");
     console.log(this.checkoutFormGroup.get('customer')?.value);
+    if (this.checkoutFormGroup.invalid) {
+      this.checkoutFormGroup.markAllAsTouched();
+    }
   }
 
   updateCartStatus() {
@@ -135,7 +156,7 @@ export class CheckoutComponent implements OnInit {
 
 
     console.log(`country code : ${countryCode}`);
-    console.log(`country code : ${countryName}`);
+    console.log(`country name : ${countryName}`);
     this.formService.getStates(countryCode).subscribe(
       data => {
         this.shoppingAddressStates = data;
