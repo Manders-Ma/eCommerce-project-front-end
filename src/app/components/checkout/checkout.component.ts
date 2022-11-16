@@ -33,29 +33,36 @@ export class CheckoutComponent implements OnInit {
   ngOnInit(): void {
     this.checkoutFormGroup = this.formBuilder.group({
       customer: this.formBuilder.group({
-        firstName: new FormControl('', [Validators.required, Validators.minLength(2), CustomerValidators.notOnlyWhiteSpace]),
-        lastName: new FormControl('', [Validators.required, Validators.minLength(2), CustomerValidators.notOnlyWhiteSpace]),
+        firstName: new FormControl('', [Validators.required, Validators.minLength(2), 
+                                        CustomerValidators.notOnlyWhiteSpace]),
+        lastName: new FormControl('', [Validators.required, Validators.minLength(2), 
+                                        CustomerValidators.notOnlyWhiteSpace]),
         // [Q] why we are not  using Angular:Validators.email ??
         // [A] Validators.email only checks for : <some text>@<some text>
         // ex : angular@gmail will pass by Validators.email
         // ps : Validators.email and Validators.pattern only checks the FORMAT. 
         //      Doesn't verify if email address is real. 
-        email: new FormControl('', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+//.[a-z]{2,4}$"), CustomerValidators.notOnlyWhiteSpace])
+        email: new FormControl('', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+//.[a-z]{2,4}$"), 
+                                    CustomerValidators.notOnlyWhiteSpace])
       }),
       shoppingAddress: this.formBuilder.group({
-        street: [''],
-        city: [''],
-        state: [''],
-        country: [''],
-        zipCode: ['']
+        street: new FormControl('', [Validators.required, Validators.minLength(2), 
+                                     CustomerValidators.notOnlyWhiteSpace]),
+        city: new FormControl('', [Validators.required, Validators.minLength(2), 
+                                   CustomerValidators.notOnlyWhiteSpace]),
+        state: new FormControl('', [Validators.required]),
+        country: new FormControl('', [Validators.required]),
+        zipCode: new FormControl('', [Validators.required, Validators.minLength(2), 
+                                      CustomerValidators.notOnlyWhiteSpace]),
       }),
       creditCard: this.formBuilder.group({
-        cardType: [''],
-        nameOnCard: [''],
-        cardNumber: [''],
-        securityCode: [''],
-        expirationMonth: [''],
-        expirationYear: ['']
+        cardType: new FormControl('', [Validators.required]),
+        nameOnCard: new FormControl('', [Validators.required, Validators.minLength(2), 
+                                         CustomerValidators.notOnlyWhiteSpace]),
+        cardNumber: new FormControl('', [Validators.required, Validators.pattern("[0-9]{16}")]),
+        securityCode: new FormControl('', [Validators.required, Validators.pattern("[0-9]{3}")]),
+        expirationMonth: new FormControl('', [Validators.required]),
+        expirationYear: new FormControl('', [Validators.required])
       })
     })
 
@@ -89,6 +96,7 @@ export class CheckoutComponent implements OnInit {
     )
   }
 
+  // customer getter function
   get firstName() {
     return this.checkoutFormGroup.get("customer.firstName")
   }
@@ -98,6 +106,40 @@ export class CheckoutComponent implements OnInit {
   get email() {
     return this.checkoutFormGroup.get("customer.email")
   }
+
+  // shoppingAddress getter function
+  get shoppingAddressStreet() {
+    return this.checkoutFormGroup.get("shoppingAddress.street")
+  }
+  get shoppingAddressCity() {
+    return this.checkoutFormGroup.get("shoppingAddress.city")
+  }
+  get shoppingAddressState() {
+    return this.checkoutFormGroup.get("shoppingAddress.state")
+  }
+  get shoppingAddressCountry() {
+    return this.checkoutFormGroup.get("shoppingAddress.country")
+  }
+  get shoppingAddressZipCode() {
+    return this.checkoutFormGroup.get("shoppingAddress.zipCode")
+  }
+
+  // creditCard getter function
+  get creditCardType() {
+    return this.checkoutFormGroup.get("creditCard.cardType")
+  }
+  get creditCardNameOnCard() {
+    return this.checkoutFormGroup.get("creditCard.nameOnCard")
+  }
+  get creditCardNumber() {
+    return this.checkoutFormGroup.get("creditCard.cardNumber")
+  }
+  get creditCardSecurityCode() {
+    return this.checkoutFormGroup.get("creditCard.securityCode")
+  }
+
+
+  
 
   onSubmit() {
     console.log("Handling the submit button");

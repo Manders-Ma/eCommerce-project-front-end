@@ -65,6 +65,14 @@
             </div>
             <div class="col-md-9 input-space">
               <input type="text" id="street" formControlName="street" />
+              <div *ngIf="shoppingAddressStreet?.invalid && (shoppingAddressStreet?.dirty || shoppingAddressStreet?.touched)" class="alert alert-danger">
+                <div *ngIf="shoppingAddressStreet?.errors?.['required'] || shoppingAddressStreet?.errors?.['notOnlyWhiteSpace']">
+                  Street is required
+                </div>
+                <div *ngIf="shoppingAddressStreet?.errors?.['minlength']">
+                  Street must be at least 2 characters long
+                </div>
+              </div>
             </div>
           </div>
           <div class="row">
@@ -73,6 +81,14 @@
             </div>
             <div class="col-md-9 input-space">
               <input type="text" id="city" formControlName="city" />
+              <div *ngIf="shoppingAddressCity?.invalid && (shoppingAddressCity?.dirty || shoppingAddressCity?.touched)" class="alert alert-danger">
+                <div *ngIf="shoppingAddressCity?.errors?.['required'] || shoppingAddressCity?.errors?.['notOnlyWhiteSpace']">
+                  City is required
+                </div>
+                <div *ngIf="shoppingAddressCity?.errors?.['minlength']">
+                  City must be at least 2 characters long
+                </div>
+              </div>
             </div>
           </div>
           <div class="row">
@@ -88,6 +104,11 @@
                   {{ state.name }}
                 </option>
               </select>
+              <div *ngIf="shoppingAddressState?.invalid && (shoppingAddressState?.dirty || shoppingAddressState?.touched)" class="alert alert-danger">
+                <div *ngIf="shoppingAddressState?.errors?.['required']">
+                  State is required
+                </div>
+              </div>
             </div>
           </div>
           <div class="row">
@@ -104,6 +125,11 @@
                   {{ country.name }}
                 </option>
               </select>
+              <div *ngIf="shoppingAddressCountry?.invalid && (shoppingAddressCountry?.dirty || shoppingAddressCountry?.touched)" class="alert alert-danger">
+                <div *ngIf="shoppingAddressCountry?.errors?.['required']">
+                  Country is required
+                </div>
+              </div>
             </div>
           </div>
           <div class="row">
@@ -112,6 +138,14 @@
             </div>
             <div class="col-md-9 input-space">
               <input type="text" id="zipCode" formControlName="zipCode" />
+              <div *ngIf="shoppingAddressZipCode?.invalid && (shoppingAddressZipCode?.dirty || shoppingAddressZipCode?.touched)" class="alert alert-danger">
+                <div *ngIf="shoppingAddressZipCode?.errors?.['required'] || shoppingAddressZipCode?.errors?.['notOnlyWhiteSpace']">
+                  Zip Code is required
+                </div>
+                <div *ngIf="shoppingAddressZipCode?.errors?.['minlength']">
+                  Zip Code must be at least 2 characters long
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -127,6 +161,11 @@
               <select type="text" id="cardType" formControlName="cardType">
                 <option>TO DO</option>
               </select>
+              <div *ngIf="creditCardType?.invalid && (creditCardType?.dirty || creditCardType?.touched)" class="alert alert-danger">
+                <div *ngIf="creditCardType?.errors?.['required']">
+                  Card Type is required
+                </div>
+              </div>
             </div>
           </div>
           <div class="row">
@@ -135,6 +174,14 @@
             </div>
             <div class="col-md-9 input-space">
               <input type="text" id="nameOnCard" formControlName="nameOnCard" />
+              <div *ngIf="creditCardNameOnCard?.invalid && (creditCardNameOnCard?.dirty || creditCardNameOnCard?.touched)" class="alert alert-danger">
+                <div *ngIf="creditCardNameOnCard?.errors?.['required'] || creditCardNameOnCard?.errors?.['notOnlyWhiteSpace']">
+                  Card Name is required
+                </div>
+                <div *ngIf="creditCardNameOnCard?.errors?.['minlength']">
+                  Card Name must be at least 2 characters long
+                </div>
+              </div>
             </div>
           </div>
           <div class="row">
@@ -143,6 +190,14 @@
             </div>
             <div class="col-md-9 input-space">
               <input type="text" id="cardNumber" formControlName="cardNumber" />
+              <div *ngIf="creditCardNumber?.invalid && (creditCardNumber?.dirty || creditCardNumber?.touched)" class="alert alert-danger">
+                <div *ngIf="creditCardNumber?.errors?.['required']">
+                  Card Number is required
+                </div>
+                <div *ngIf="creditCardNumber?.errors?.['pattern']">
+                  Card Number must be a card number format
+                </div>
+              </div>
             </div>
           </div>
           <div class="row">
@@ -155,6 +210,14 @@
                 id="securityCode"
                 formControlName="securityCode"
               />
+              <div *ngIf="creditCardSecurityCode?.invalid && (creditCardSecurityCode?.dirty || creditCardSecurityCode?.touched)" class="alert alert-danger">
+                <div *ngIf="creditCardSecurityCode?.errors?.['required']">
+                  Security Code is required
+                </div>
+                <div *ngIf="creditCardSecurityCode?.errors?.['pattern']">
+                  Security Code must be a security code format
+                </div>
+              </div>
             </div>
           </div>
           <div class="row">
