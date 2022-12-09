@@ -6,7 +6,7 @@ import { OrderItem } from "./order-item";
 export class Purchase {
     constructor(
         public customer: Customer,
-        public shoppingAddress: Address,
+        public shippingAddress: Address,
         public order: Order,
         public orderItems: OrderItem[]
     ){}

@@ -32,7 +32,7 @@ export class CheckoutComponent implements OnInit {
   creditCardYear: number[] = [];
 
   countries: Country[] = [];
-  shoppingAddressStates: State[] = [];
+  shippingAddressStates: State[] = [];
 
 
   constructor(
@@ -43,38 +43,40 @@ export class CheckoutComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit(): void {
+    // I use document.getElementsByClassName('ng-invalid') in website's console to find the invalid form control.
+    // I take off the customer validator, and then the form group workink.
     this.checkoutFormGroup = this.formBuilder.group({
       customer: this.formBuilder.group({
-        firstName: new FormControl(null, [Validators.required, Validators.minLength(2), 
-                                        CustomerValidators.notOnlyWhiteSpace]),
+        firstName: new FormControl('', [Validators.required, Validators.minLength(2), 
+                                        ]),
         lastName: new FormControl('', [Validators.required, Validators.minLength(2), 
-                                        CustomerValidators.notOnlyWhiteSpace]),
+                                        ]),
         // [Q] why we are not  using Angular:Validators.email ??
         // [A] Validators.email only checks for : <some text>@<some text>
         // ex : angular@gmail will pass by Validators.email
         // ps : Validators.email and Validators.pattern only checks the FORMAT. 
         //      Doesn't verify if email address is real. 
         email: new FormControl('', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$"), 
-                                    CustomerValidators.notOnlyWhiteSpace])
+                                    ])
       }),
-      shoppingAddress: this.formBuilder.group({
+      shippingAddress: this.formBuilder.group({
         street: new FormControl('', [Validators.required, Validators.minLength(2), 
-                                     CustomerValidators.notOnlyWhiteSpace]),
+                                     ]),
         city: new FormControl('', [Validators.required, Validators.minLength(2), 
-                                   CustomerValidators.notOnlyWhiteSpace]),
+                                   ]),
         state: new FormControl('', [Validators.required]),
-        country: new FormControl('', [Validators.required]),
+        country: new FormControl(''),
         zipCode: new FormControl('', [Validators.required, Validators.minLength(2), 
-                                      CustomerValidators.notOnlyWhiteSpace]),
+                                      ]),
       }),
       creditCard: this.formBuilder.group({
-        cardType: new FormControl('', [Validators.required]),
+        cardType: new FormControl(''),
         nameOnCard: new FormControl('', [Validators.required, Validators.minLength(2), 
-                                         CustomerValidators.notOnlyWhiteSpace]),
+                                         ]),
         cardNumber: new FormControl('', [Validators.required, Validators.pattern("[0-9]{16}")]),
         securityCode: new FormControl('', [Validators.required, Validators.pattern("[0-9]{3}")]),
-        expirationMonth: new FormControl('', [Validators.required]),
-        expirationYear: new FormControl('', [Validators.required])
+        expirationMonth: new FormControl(''),
+        expirationYear: new FormControl('')
       })
     })
 
@@ -106,6 +108,14 @@ export class CheckoutComponent implements OnInit {
         this.countries = data;
       }
     )
+
+    // find the invalid control
+    const subFormGroupName = ["customer", "shippingAddress", "creditCard"];
+    const invalid = [];
+
+    for (let name in subFormGroupName){
+      console.log(this.checkoutFormGroup.controls["customer"].invalid);
+    }
   }
 
   // customer getter function
@@ -119,21 +129,21 @@ export class CheckoutComponent implements OnInit {
     return this.checkoutFormGroup.get("customer.email")
   }
 
-  // shoppingAddress getter function
-  get shoppingAddressStreet() {
-    return this.checkoutFormGroup.get("shoppingAddress.street")
+  // shippingAddress getter function
+  get shippingAddressStreet() {
+    return this.checkoutFormGroup.get("shppingAddress.street")
   }
-  get shoppingAddressCity() {
-    return this.checkoutFormGroup.get("shoppingAddress.city")
+  get shippingAddressCity() {
+    return this.checkoutFormGroup.get("shippingAddress.city")
   }
-  get shoppingAddressState() {
-    return this.checkoutFormGroup.get("shoppingAddress.state")
+  get shippingAddressState() {
+    return this.checkoutFormGroup.get("shippingAddress.state")
   }
-  get shoppingAddressCountry() {
-    return this.checkoutFormGroup.get("shoppingAddress.country")
+  get shippingAddressCountry() {
+    return this.checkoutFormGroup.get("shippingAddress.country")
   }
-  get shoppingAddressZipCode() {
-    return this.checkoutFormGroup.get("shoppingAddress.zipCode")
+  get shippingAddressZipCode() {
+    return this.checkoutFormGroup.get("shippingAddress.zipCode")
   }
 
   // creditCard getter function
@@ -172,15 +182,19 @@ export class CheckoutComponent implements OnInit {
     let customer: Customer = this.checkoutFormGroup.controls["customer"].value;
 
     // populate purchase - shipping address
-    let shoppingAddress: Address = this.checkoutFormGroup.controls["shoppingAddress"].value;
+    let shippingAddress: Address = this.checkoutFormGroup.controls["shippingAddress"].value;
+    const state = JSON.parse(JSON.stringify(shippingAddress.state)).name;
+    const country = JSON.parse(JSON.stringify(shippingAddress.country)).name;
+    shippingAddress.state = state;
+    shippingAddress.country = country;
 
     // set up purchase
     let purchase: Purchase = new Purchase(customer=customer, 
-                                          shoppingAddress=shoppingAddress,
+                                          shippingAddress=shippingAddress,
                                           order=order,
                                           orderItems=orderItems);
 
-
+    console.log("my purchase information\n", purchase);
     // call REST API via the checkoutService
     this.checkoutService.placeOrder(purchase).subscribe(
       {
@@ -247,7 +261,7 @@ export class CheckoutComponent implements OnInit {
   }
 
   getStates() {
-    const formGroup = this.checkoutFormGroup.get("shoppingAddress");
+    const formGroup = this.checkoutFormGroup.get("shippingAddress");
     const countryName:String = formGroup?.value.country.name;
     const countryCode:String = formGroup?.value.country.code;
 
@@ -256,10 +270,11 @@ export class CheckoutComponent implements OnInit {
     console.log(`country name : ${countryName}`);
     this.formService.getStates(countryCode).subscribe(
       data => {
-        this.shoppingAddressStates = data;
+        this.shippingAddressStates = data;
         formGroup?.get("state")?.setValue(data[0]);
       }
     )
   }
   
 }
+

@@ -23,10 +23,22 @@ import { FormService } from './services/form.service';
 // import module for using ng-bootstrap
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReactiveFormsModule } from '@angular/forms';
+import { LoginComponent } from './components/login/login.component';
+import { CheckoutService } from './services/checkout.service';
+import { LoginStatusComponent } from './components/login-status/login-status.component';
 
+// import okta angular sdk, okta js sdk and my app config
+import { OktaAuthModule, OktaCallbackComponent, OKTA_CONFIG } from '@okta/okta-angular';
+import { OktaAuth } from '@okta/okta-auth-js';
+import appConfig from './config/app-config';
+
+const oktaConfig = appConfig.oidc;
+const oktaAuth = new OktaAuth(oktaConfig);
 
 // set up routes constant where you define your routes.
 const routes: Routes = [
+  {path: 'login/callback', component: OktaCallbackComponent},
+  {path: 'login', component: LoginComponent},
   {path: 'products/:id', component: ProductDetailsComponent},
   {path: 'search/:keyword', component: ProductListComponent},
   {path: "category/:id", component: ProductListComponent},
@@ -34,6 +46,7 @@ const routes: Routes = [
   {path: "checkout", component: CheckoutComponent},
   {path: "category", component: ProductListComponent},
   {path: "products", component: ProductListComponent},
+  
   // for empty url(relative path /)
   {path: '', redirectTo: "/products", pathMatch: "full"},
   // for any not match url
@@ -49,16 +62,19 @@ const routes: Routes = [
     ProductDetailsComponent,
     CartStatusComponent,
     CartDetailsComponent,
-    CheckoutComponent
+    CheckoutComponent,
+    LoginComponent,
+    LoginStatusComponent
   ],
   imports: [
     RouterModule.forRoot(routes),
     BrowserModule,
     HttpClientModule,
     NgbModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    OktaAuthModule
   ],
-  providers: [ProductService, CartService, FormService],
+  providers: [ProductService, CartService, FormService, CheckoutService, {provide: OKTA_CONFIG, useValue: {oktaAuth}}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
